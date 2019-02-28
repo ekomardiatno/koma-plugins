@@ -1,0 +1,27 @@
+{
+  "name": "koma-plugins",
+  "version": "1.0.0",
+  "description": "Plugins by Eko Mardiatno",
+  "scripts": {
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekomardiatno/koma-plugins.git"
+  },
+  "keywords": [
+    "Plugins"
+  ],
+  "author": "Eko Mardiatno",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ekomardiatno/koma-plugins/issues"
+  },
+  "homepage": "https://github.com/ekomardiatno/koma-plugins#readme",
+  "dependencies": {
+    "gulp": "^4.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.1",
+    "uglify-save-license": "^0.4.1"
+  }
+}

@@ -22,7 +22,7 @@ if (typeof jQuery === 'undefined') {
 }
 
 /* ========================================================================
- * Image by Ratio
+ * View Image by Ratio
  * ======================================================================== */
 
 +function ($) {
@@ -53,52 +53,99 @@ if (typeof jQuery === 'undefined') {
         startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
       })
     })
-
   }
-}(jQuery)
-function startImageByRatio ( settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y ) {
-  if ( settings.responsive != null ) {
-    var wwin = $(window).width()
-    for(var i in settings.responsive) {
-      if(wwin <= i) {
-        ratio_x = settings.responsive[i].ratio_x
-        ratio_y = settings.responsive[i].ratio_y
-        break
+
+  function startImageByRatio ( settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y ) {
+    if ( settings.responsive != null ) {
+      var wwin = $(window).width()
+      for(var i in settings.responsive) {
+        if(wwin <= i) {
+          ratio_x = settings.responsive[i].ratio_x
+          ratio_y = settings.responsive[i].ratio_y
+          break
+        }
       }
     }
+  
+    var widthParent = parent.width(),
+        heightParent = widthParent / ratio_x * ratio_y,
+        widthByRatioImg = heightParent / heightImg * widthImg,
+        heightByRatioImg = widthParent / widthImg * heightImg,
+        diff,
+        transformCss,
+        widthImgCss,
+        heightImgCss
+    
+    if ( (widthImg > heightImg && heightByRatioImg < heightParent) || (widthImg < heightImg && widthByRatioImg > widthParent) ) {
+      diff = (widthByRatioImg - widthParent) / 2
+      transformCss = 'translateX(-' + diff + 'px)'
+      widthImgCss = 'auto'
+      heightImgCss =' 100%'
+    } else {
+      diff = (heightByRatioImg - heightParent) / 2
+      transformCss = 'translateY(-' + diff + 'px)'
+      widthImgCss = '100%'
+      heightImgCss =' auto'
+    }
+    imgEl.css({
+      'max-width': 'none',
+      'max-height': 'none',
+      width: widthImgCss,
+      height: heightImgCss,
+      transform: transformCss
+    })
+    parent.css({
+      overflow: 'hidden',
+      height: heightParent
+    })
+    parent.attr('ratio-x', ratio_x)
+    parent.attr('ratio-y', ratio_y)
+  }
+}(jQuery)
+
+/* ========================================================================
+ * Animate.css Scroll
+ * ======================================================================== */
+
++function ($) {
+  'use strict'
+  $.fn.animationScroll = function () {
+      return this.each(function () {
+          var a = $(this),
+              top = a.offset().top,
+              name = a.attr('animation-name') + ' ',
+              duration = a.attr('animation-duration'),
+              delay = a.attr('animation-delay'),
+              repeat = a.attr('animation-repeat'),
+              height = a.height()
+
+          a.before('<div class="animation-wrap"></div>')
+          var parent = a.prev('.animation-wrap')
+          a.appendTo(parent)
+
+          duration == undefined ? duration = '' : duration = duration + ' '
+          delay == undefined ? delay = '' : delay = 'delay-' + delay + 's '
+
+          var nameClass = name + duration + delay + 'animated'
+
+          var wintop = $(window).scrollTop()
+          startAnimation(wintop, top, height, parent, nameClass, repeat)
+
+          $(window).on('scroll', function () {
+              var wintop = $(this).scrollTop()
+              startAnimation(wintop, top, height, parent, nameClass, repeat)
+          })
+      })
   }
 
-  var widthParent = parent.width(),
-      heightParent = widthParent / ratio_x * ratio_y,
-      widthByRatioImg = heightParent / heightImg * widthImg,
-      heightByRatioImg = widthParent / widthImg * heightImg,
-      diff,
-      transformCss,
-      widthImgCss,
-      heightImgCss
-  
-  if ( (widthImg > heightImg && heightByRatioImg < heightParent) || (widthImg < heightImg && widthByRatioImg > widthParent) ) {
-    diff = (widthByRatioImg - widthParent) / 2
-    transformCss = 'translateX(-' + diff + 'px)'
-    widthImgCss = 'auto'
-    heightImgCss =' 100%'
-  } else {
-    diff = (heightByRatioImg - heightParent) / 2
-    transformCss = 'translateY(-' + diff + 'px)'
-    widthImgCss = '100%'
-    heightImgCss =' auto'
+  function startAnimation(wintop, top, height, parent, nameClass, repeat) {
+      if ( wintop >= top - $(window).height() && wintop <= top + height ) {
+          parent.addClass(nameClass)
+      } else {
+          if ( repeat != undefined ) {
+              parent.attr('class', 'animation-wrap')
+          }
+      }
   }
-  imgEl.css({
-    'max-width': 'none',
-    'max-height': 'none',
-    width: widthImgCss,
-    height: heightImgCss,
-    transform: transformCss
-  })
-  parent.css({
-    overflow: 'hidden',
-    height: heightParent
-  })
-  parent.attr('ratio-x', ratio_x)
-  parent.attr('ratio-y', ratio_y)
-}
+  
+}(jQuery)
