@@ -27,32 +27,11 @@ if (typeof jQuery === 'undefined') {
 
 +function ($) {
   'use strict'
+  
   var defaults = {
     ratio_x: 1,
     ratio_y: 1,
     responsive: null
-  }
-  $.fn.imageByRatio = function (options) {
-    var settings = $.extend({},defaults,options),
-        ratio_x = settings.ratio_x,
-        ratio_y = settings.ratio_y,
-        className = 'frame-imgByRatio'
-
-    return this.each(function () {
-      var a = $(this),
-          b = this,
-          widthImg = b.naturalWidth,
-          heightImg = b.naturalHeight
-      a.before('<div class="' + className + '"></div>')
-      var parent = a.prev('.' + className)
-      a.appendTo(parent)
-      var imgEl = parent.children('img')
-
-      startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
-      $(window).on('resize', function () {
-        startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
-      })
-    })
   }
 
   function startImageByRatio ( settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y ) {
@@ -101,6 +80,29 @@ if (typeof jQuery === 'undefined') {
     parent.attr('ratio-x', ratio_x)
     parent.attr('ratio-y', ratio_y)
   }
+
+  $.fn.imageByRatio = function (options) {
+    var settings = $.extend({},defaults,options),
+        ratio_x = settings.ratio_x,
+        ratio_y = settings.ratio_y,
+        className = 'frame-imgByRatio'
+
+    return this.each(function () {
+      var a = $(this),
+          b = this,
+          widthImg = b.naturalWidth,
+          heightImg = b.naturalHeight
+      a.before('<div class="' + className + '"></div>')
+      var parent = a.prev('.' + className)
+      a.appendTo(parent)
+      var imgEl = parent.children('img')
+
+      startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
+      $(window).on('resize', function () {
+        startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
+      })
+    })
+  }
 }(jQuery)
 
 /* ========================================================================
@@ -109,6 +111,17 @@ if (typeof jQuery === 'undefined') {
 
 +function ($) {
   'use strict'
+
+  function startAnimation(wintop, top, height, parent, nameClass, repeat) {
+      if ( wintop >= top - $(window).height() && wintop <= top + height ) {
+          parent.addClass(nameClass)
+      } else {
+          if ( repeat != undefined ) {
+              parent.attr('class', 'animation-wrap')
+          }
+      }
+  }
+
   $.fn.animationScroll = function () {
       return this.each(function () {
           var a = $(this),
@@ -137,15 +150,33 @@ if (typeof jQuery === 'undefined') {
           })
       })
   }
-
-  function startAnimation(wintop, top, height, parent, nameClass, repeat) {
-      if ( wintop >= top - $(window).height() && wintop <= top + height ) {
-          parent.addClass(nameClass)
-      } else {
-          if ( repeat != undefined ) {
-              parent.attr('class', 'animation-wrap')
-          }
-      }
-  }
   
+}(jQuery)
+
+/* ========================================================================
+ * Preloader with Animate.css
+ * ======================================================================== */
+
++function ($) {
+  'use strict'
+
+  var CloseWrapper
+  CloseWrapper = function ($this, animate) {
+    $(window).on('load', function () {
+      if(animate == undefined) {
+        $this.fadeOut(1000)
+      } else {
+        $this.addClass(animate + ' animated')
+        setTimeout(function () {
+          $this.hide()
+        }, 1000)
+      }
+    })
+  }
+
+  $.fn.preloader = function () {
+    return this.each(function () {
+      CloseWrapper($(this), $(this).attr('animation-name'))
+    })
+  }
 }(jQuery)
