@@ -18,4 +18,12 @@ function minifyJS() {
 
 }
 
-gulp.task('default', gulp.series(minifyJS))
+function watch(done) {
+  gulp.watch([
+    './koma-plugins.js'
+  ], minifyJS)
+
+  done()
+}
+
+gulp.task('default', gulp.series(minifyJS, watch))

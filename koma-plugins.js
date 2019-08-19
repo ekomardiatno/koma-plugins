@@ -19,6 +19,13 @@
 
 if (typeof jQuery === 'undefined') {
   throw new Error('Koma Plugins requires jQuery')
+} else {
+  throw(
+    'KOMA PLUGINS\n'+
+    'Created by Eko Mardiatno\n'+
+    'ekomardiatno@gmail.com\n'+
+    'Instagram @komafx'
+  )
 }
 
 /* ========================================================================
@@ -97,9 +104,11 @@ if (typeof jQuery === 'undefined') {
       a.appendTo(parent)
       var imgEl = parent.children('img')
 
-      startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
-      $(window).on('resize', function () {
+      a.on('load', function () {
         startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
+        $(window).on('resize', function () {
+          startImageByRatio(settings, imgEl, parent, widthImg, heightImg, ratio_x, ratio_y)
+        })
       })
     })
   }
